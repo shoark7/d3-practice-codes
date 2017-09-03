@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Make paragraphs with some given data.</title>
+	<script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
+</head>
+<body>
+	<!--<p>Fuck you man..</p>-->
+	
+	<script type="text/javascript">
+		var dataset = [5, 10, 15, 20, 25];	
+
+		d3.select("body")
+				.selectAll("p for all")
+				.data(dataset) // 데이터 개수 파악하고 파싱. 데이터 개수만큼 이후 코드들이 반복 실행됨.
+				.enter()			 // enter가 중요. 만약 선택된 dom 문서요소보다 데이터의 개수가 많으면 그만큼 문서요소 생성.
+				.append("p")
+				.text(function(d) { return d; }) // attr은 html 속성 지정, style은 css 프로퍼티
+				.style("color", function(d) {
+					if (d > 15) {
+						return "red";
+					} else {
+						return "black";
+					}
+				});
+	
+	</script>
+</body>
+</html>
