@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Draw with data: SVG</title>
+	<script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
+</head>
+<body>
+	<script type="text/javascript">
+		var dataset = [5, 10, 15, 20, 25];
+		var svg = d3.select("body").append("svg")
+									.attr("width", 500)
+									.attr("height", 50);	
+	
+		var circles = svg.selectAll("circle")
+											.data(dataset)
+											.enter()
+											.append("circle");	
+
+		circles.attr("cx", function(d, i) {
+				return (i * 50) + 25;
+		})
+					 .attr("cy", 25)
+					 .attr("r", function(d) {
+						 return d;
+					 })
+					 .attr("fill", "yellow")
+					 .attr("stroke", "orange")
+					 .attr("stroke-width", function(d) {  // 신기하게도, 이 stroke는 원 반지름에 포함되지 않고, 연장된다!!
+							return 10;
+					 });
+	
+	
+	</script>
+</body>
+</html>
