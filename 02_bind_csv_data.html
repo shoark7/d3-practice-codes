@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bind csv data for the first time</title>
+	<script type="text/javascript" src='https://d3js.org/d3.v4.min.js'></script>
+</head>
+<body>
+	<script type="text/javascript">
+		var dataset; // 전역변수를 지정함으로써 d3.csv 함수 밖에서도 데이터에 접근할 수 있다.
+
+		d3.csv("./dataset/food.csv", function(error, data) {
+			dataset = data;
+
+			if(error) {
+				console.log(error);
+			} else {
+				console.log(data);
+			}
+		});
+	</script>
+	
+	
+</body>
+</html>
