@@ -85,5 +85,3 @@ svg.selectAll("bar-label")
 			 })
 })
 ();
-
-
