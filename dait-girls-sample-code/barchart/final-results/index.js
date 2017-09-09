@@ -1,13 +1,10 @@
 var dataset = []
 
-for(let i = 0; i < 20; i++) {
+for(let i = 0; i < 15; i++) {
 	dataset[i] = Math.floor(Math.random() * 20 + 1)
 }
 
 (function main() {
-var get_height = function(d) { return d ; }
-var get_x = function(d, i) { return i * (bar_width + bar_interval) + offset_x; }
-var get_y = function(d) { return h - d  - offset_y;	}
 
 // Set variable
 let w = 500;
@@ -17,7 +14,22 @@ let offset_x = 40;
 let offset_y = 30;
 let bar_interval = 5;
 let bar_width = (w - offset_x - bar_interval * (bar_length - 1)) / bar_length - 1;
-let largest_data = Math.max(...dataset);
+let largest_data = d3.max(dataset);
+
+
+// yscale 
+var y_axis_scale = d3.scale.linear()
+								.domain([20, 0])
+								.range([0, h - offset_y - 30]);
+var yscale = d3.scale.linear()
+								.domain([20, 0])
+								.range([h - offset_y - 30, 0]);
+
+// helper functions
+var get_height = function(d) { return yscale(d)	; }
+var get_x = function(d, i) { return i * (bar_width + bar_interval) + offset_x; }
+var get_y = function(d) { return h - yscale(d)  - offset_y;	}
+
 
 // Draw bars
 let svg = d3.select("#bar-graph")
@@ -35,16 +47,13 @@ svg.selectAll("rect")
 
 // Draw axes
 //// y axis
-let yscale = d3.scale.linear()
-								.domain([0, 20])
-								.range([20 , 0]);
 
 svg.append("g")
 			.attr("class", "axis")
-			.attr("transform", "translate(" + offset_x + ", " + (h - 20 - offset_y) + ")")
+			.attr("transform", "translate(" + offset_x + ", " + (h - yscale(20) - offset_y) + ")")
 			.call(
 					d3.svg.axis()
-						.scale(yscale)
+						.scale(y_axis_scale)
 						.orient("left")
 			)
 //// x axis
