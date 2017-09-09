@@ -68,3 +68,4 @@ barElements.enter()
 	.text(function(d, i){
 		return ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"][i];	// 레이블 이름을 반환●
 	})
+
