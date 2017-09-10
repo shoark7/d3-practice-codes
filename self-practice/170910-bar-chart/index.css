@@ -1,0 +1,29 @@
+.container {
+	text-align: center;
+}
+
+#my-graph {
+	border: 1px solid black;
+	width: 500px;
+	height: 300px;
+}
+
+.bar {
+	fill: teal;
+	stroke: orange;
+}
+
+.axis path, line {
+	fill: none;
+	stroke: black;
+	shape-rendering: crispEdges;
+}
+
+.axis text,
+.bar-label,
+.axis-label {
+	fill: black;
+	font-size: 10pt;
+	font-family: sans-serif;
+	text-anchor: middle;
+}
