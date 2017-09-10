@@ -99,7 +99,8 @@ d3.select("input")
 						height: function(d) { return height - margin.b - yScale(d); }
 					})
 					.style("fill", function(d) {
-						return "rgb(0,0," + (d * 10) +")";
+						let colorRatio = 255 / maxValue;
+						return "rgb(0,0," + (d * colorRatio) +")";
 					});
 
 			svg.selectAll(".bar-labels")
