@@ -1,0 +1,38 @@
+<!docTYPE html>
+<html lang="en">
+<HEAD>
+  <meta charset="UTF-8">
+  <title>Bar chart with update</title>
+	<script type="text/javascript" src="../../d3.v3.min.js"></script>
+	<style type="text/css">
+    .container {
+			text-align: center;
+		}
+		svg {
+			border: 1px solid black;
+			overflow: scroll;
+			background-color: ivory;
+			display: block;
+			margin: auto;
+		}
+		.axis line, path {
+			fill: none;
+			stroke: black;
+		}
+		.axis text {
+			shape-rendering: crispEdges;
+			font-size: 9pt;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<h1>Bar chart with update</h1>
+		<input name="" value="click me" type="button">
+		<svg id="my-graph"></svg>
+	</div>
+	
+	
+	<script type="text/javascript" src="index.js"></script>
+</body>
+</html>
