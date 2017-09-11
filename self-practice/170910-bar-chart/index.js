@@ -39,6 +39,7 @@ simpleBarChart = function(dataset, selector) {
 	*/
 
 	svg = d3.select(selector)
+		// 상수 All caps
 	let margin = { top: 30, right: 20, bottom: 40, left: 35 };
 	let width = 500;
 	let height = 300;
