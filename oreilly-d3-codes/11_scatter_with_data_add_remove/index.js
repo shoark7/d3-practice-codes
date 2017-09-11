@@ -94,9 +94,21 @@ drawScatter = function(dataset, selector) {
 						.data(newData)
 						.transition()
 						.duration(1000)
+						.each("start", function() {
+							d3.select(this)
+								.style("fill", "blue")
+								.attr("r", 5);
+						})
 						.attr({
 							"cx": function(d) { return xScale(d[0]);	},
 							"cy": function(d) { return height - yScale(d[1]); }
+						})
+						.each("end", function() {
+							d3.select(this)
+								.transition()
+								.duration(1000)
+								.style("fill", "black")
+								.attr("r", 3);
 						});
 
 				svg.select(".x.axis")
