@@ -52,6 +52,13 @@ drawScatter = function(dataset, selector) {
 									.domain([0, d3.max(dataset, function(d) { return d[1]; })])
 									.range([height, 0]);
 
+  var xAxis = d3.svg.axis()
+								.scale(xScale)
+								.orient("bottom")
+  var yAxis = d3.svg.axis()
+								.scale(yScale)
+								.orient("left")
+
 	// Draw points
 	svg.selectAll("point")
 			.data(dataset)
@@ -66,21 +73,13 @@ drawScatter = function(dataset, selector) {
 
 	// Draw x, y axis
 	svg.append("g")
-			.attr("class", "axis")
+			.attr("class", "x axis")
 			.attr("transform", "translate(0, " + height + ")")
-			.call(
-					d3.svg.axis()
-						.scale(xScale)
-						.orient("bottom")
-			)
+			.call(xAxis);
 
 	svg.append("g")
-			.attr("class", "axis")
-			.call(
-					d3.svg.axis()
-						.scale(yScale)
-						.orient("left")
-			);
+			.attr("class", "y axis")
+			.call(yAxis);
 			
 	
 	// Add an eventListener: Update data when #update-date is clicked.
@@ -88,14 +87,32 @@ drawScatter = function(dataset, selector) {
 			.on("click", function() {
 				let newData = updatePointData(dataset);
 
+				xScale.domain([0, d3.max(dataset, function(d) { return d[0]; })])
+				yScale.domain([0, d3.max(dataset, function(d) { return d[1]; })])
+
 				svg.selectAll("circle")
 						.data(newData)
+						.transition()
+						.duration(1000)
 						.attr({
 							"cx": function(d) { return xScale(d[0]);	},
 							"cy": function(d) { return height - yScale(d[1]); }
 						});
-			})	
 
+				svg.select(".x.axis")
+						.call(
+								d3.svg.axis()
+									.scale(xScale)
+									.orient("bottom")
+						);
+
+				svg.select(".y.axis")
+						.call(
+								d3.svg.axis()
+									.scale(yScale)
+									.orient("left")
+						);
+			})	
 
 }
 
@@ -108,4 +125,4 @@ main = function(maxValue, length, selector) {
 }
 
 // Execute a program.
-main(100, 30, "#scatter");
+main(1000, 30, "#scatter");
