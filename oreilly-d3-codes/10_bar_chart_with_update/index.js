@@ -2,10 +2,14 @@ var dataset = [];
 var dataLength = 20;
 var maxValue = 50;
 var colorRatio = Math.round(255 / maxValue);
+var key = function(d) {
+	return d.key;
+}
 
 
 for(let i = 0; i < dataLength; i++ ) {
-	dataset[i] = Math.floor(Math.random() * maxValue) + 1;
+	let n = Math.floor(Math.random() * maxValue) + 1;
+	dataset[i] = { key: i, value: n };
 }
 							
 var width = 1000;
@@ -28,17 +32,17 @@ var xScale = d3.scale.ordinal()
 
 // Add bars
 svg.selectAll("rect")
-	 .data(dataset)
+	 .data(dataset, key)
 	 .enter()
 	 .append("rect")
 		.attr({
 			x: function(d, i) { return xScale(i); },
-			y: function(d) { return yScale(d); },
+			y: function(d) { return yScale(d.value); },
 			width: xScale.rangeBand(),
-			height: function(d) { return height - margin.b - yScale(d); }
+			height: function(d) { return height - margin.b - yScale(d.value); }
 		})
 		.style("fill", function(d) {
-			return "rgb(0,0," + (d * colorRatio) + ")";
+			return "rgb(0,0," + (d.value * colorRatio) + ")";
 		})
 
 
@@ -56,7 +60,7 @@ svg.append("g")
 
 // Add bar labels
 svg.selectAll("bar-label")
-		.data(dataset)
+		.data(dataset, key)
 		.enter()
 		.append("text")
 			.attr("class", "bar-labels")
@@ -66,12 +70,12 @@ svg.selectAll("bar-label")
 					return xScale(i) + xScale.rangeBand() / 2;
 				},
 				y: function(d) {
-					return yScale(d) + (d > 3? 20 : -10);
+					return yScale(d.value) + (d.value > 3? 20 : -10);
 				}
 			})
-			.text(function(d) { return d; })
+			.text(function(d) { return d.value; })
 			.style("fill", function(d) {
-				return d > 3 ? "white": "black";
+				return d.value > 3 ? "white": "black";
 			})
 	
 
@@ -81,55 +85,60 @@ svg.selectAll("bar-label")
 d3.select("#update-data")
 		.on("click", function() {
 			let bars = svg.selectAll("rect");
-			for(let i = 0; i < dataset.length; i++) {
-				dataset[i] = Math.floor(Math.random() * maxValue) + 1;
+			for(let i = 0; i < dataset.length; i++ ) {
+				let n = Math.floor(Math.random() * maxValue) + 1;
+				dataset[i].value = n;
 			}
 
-			bars.data(dataset)
-				.transition()
-				.delay(function(d, i) {
-					return i / dataset.length * 1000;
-				})
-				.duration(500)
-				.attr({
-					y: function(d) { return yScale(d); },
-					height: function(d) { return height - margin.b - yScale(d); }
-				})
-				.style("fill", function(d) {
-					return "rgb(0,0," + (d * colorRatio) +")";
-				});
+			bars.data(dataset, key)
+					.transition()
+					.delay(function(d, i) {
+						return i / dataset.length * 1000;
+					})
+					.duration(500)
+					.attr({
+						y: function(d) { return yScale(d.value); },
+						height: function(d) { return height - margin.b - yScale(d.value); }
+					})
+					.style("fill", function(d) {
+						return "rgb(0,0," + (d.value * colorRatio) +")";
+					});
 
 		svg.selectAll(".bar-labels")
-				.data(dataset)
+				.data(dataset, key)
 				.transition()
 				.delay(function(d, i) {
 					return i / dataset.length * 1000;
 				})
 				.duration(500)
-				.attr("y", function(d) { return yScale(d) + (d > 2? 20: -10); })
-				.text(function(d) { return d; })
+				.attr("y", function(d) { return yScale(d.value) + (d.value > 2? 20: -10); })
+				.text(function(d) { return d.value; })
 				.style("fill", function(d) {
-					return d > 2? "white": "black";
+					return d.value > 2? "white": "black";
 				})
 })
 
-// Add data
+// enter data
 d3.select("#enter-data")
 		.on("click", function() {
 
-			dataset.push(Math.floor(Math.random() * maxValue) + 1);
+			let lastKey = dataset[dataset.length - 1].key;
+			dataset.push({
+					key: lastKey + 1,
+					value: Math.floor(Math.random() * maxValue) + 1
+			});
 			xScale.domain(d3.range(dataset.length))
 
 			let bars = svg.selectAll("rect")
-										.data(dataset);
+										.data(dataset, key);
 
 			bars.enter()
 						.append("rect")
 							.attr({
 								x: width,
 								width: xScale.rangeBand(),
-								y: function(d) { return yScale(d); },
-								height: function(d) { return height - margin.b - yScale(d); }
+								y: function(d) { return yScale(d.value); },
+								height: function(d) { return height - margin.b - yScale(d.value); }
 							})
 
 
@@ -140,34 +149,72 @@ d3.select("#enter-data")
 					})
 					.attr("width", xScale.rangeBand())
 					.style("fill", function(d) {
-						return "rgb(0,0," + (d * colorRatio) +")";
+						return "rgb(0,0," + (d.value * colorRatio) +")";
 					});
 
 
 			let labels = svg.selectAll(".bar-labels")
-											.data(dataset);
+											.data(dataset, key);
 
-				labels.enter()
-							.append("text")
-								.attr("x", width)
-								.attr("class", "bar-labels")
-								.style("text-anchor", "middle")
-								.attr({
-									y: function(d) {
-										return yScale(d) + 20;
-									}
-								})
-								.text(function(d) { return d; })
-								.style("fill", function(d) {
-									return d != 1? "white": "black";
-								})
+			labels.enter()
+						.append("text")
+							.attr("x", width)
+							.attr("class", "bar-labels")
+							.style("text-anchor", "middle")
+							.attr({
+								y: function(d) {
+									return yScale(d.value) + (d.value > 3? 20 : -10);
+								}
+							})
+							.text(function(d) { return d.value; })
+							.style("fill", function(d) {
+								return d.value > 3 ? "white": "black";
+							})
 
 
 				labels.transition()
 					.duration(500)
-						.attr({
-							x: function(d, i) {
-								return xScale(i) + xScale.rangeBand() / 2;
-							},
-						})
+					.attr({
+						x: function(d, i) {
+							return xScale(i) + xScale.rangeBand() / 2;
+						},
+					})
 })
+
+
+// Remove data
+d3.select("#exit-data")
+		.on("click", function() {
+
+			dataset.shift();
+			xScale.domain(d3.range(dataset.length));
+			let bars = d3.selectAll("rect")
+										.data(dataset, key);
+			let barLabels = d3.selectAll(".bar-labels")
+										.data(dataset, key);
+
+			bars.exit()
+					.transition()
+					.duration(500)
+					.attr("x", -xScale.rangeBand())
+					.remove();
+
+			bars.transition()
+					.duration(500)
+					.attr("x", function(d, i) {
+						return xScale(i);
+					})
+					.attr("width", xScale.rangeBand())
+
+			barLabels
+					.exit()
+					.transition()
+					.duration(500)
+					.attr("x", -xScale.rangeBand())
+					.remove();
+
+			barLabels.transition()
+							 .duration(500)
+							 .attr("x", function(d, i) { return xScale(i) + xScale.rangeBand() / 2 });
+})
+
