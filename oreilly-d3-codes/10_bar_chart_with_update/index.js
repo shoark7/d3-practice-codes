@@ -1,6 +1,7 @@
 var dataset = [];
 var dataLength = 20;
 var maxValue = 50;
+var colorRatio = Math.round(255 / maxValue);
 
 
 for(let i = 0; i < dataLength; i++ ) {
@@ -31,19 +32,13 @@ svg.selectAll("rect")
 	 .enter()
 	 .append("rect")
 		.attr({
-			x: function(d, i) {
-				return xScale(i);
-			},
-			y: function(d) {
-				return yScale(d);
-			},
+			x: function(d, i) { return xScale(i); },
+			y: function(d) { return yScale(d); },
 			width: xScale.rangeBand(),
-			height: function(d) {
-				return height - margin.b - yScale(d);
-			}
+			height: function(d) { return height - margin.b - yScale(d); }
 		})
-		.attr("fill", function(d) {
-			return "rgb(0,0," + (d * 10) +")";
+		.style("fill", function(d) {
+			return "rgb(0,0," + (d * colorRatio) + ")";
 		})
 
 
@@ -71,12 +66,12 @@ svg.selectAll("bar-label")
 					return xScale(i) + xScale.rangeBand() / 2;
 				},
 				y: function(d) {
-					return yScale(d) + 20;
+					return yScale(d) + (d > 3? 20 : -10);
 				}
 			})
 			.text(function(d) { return d; })
 			.style("fill", function(d) {
-				return d != 1? "white": "black";
+				return d > 3 ? "white": "black";
 			})
 	
 
@@ -101,7 +96,6 @@ d3.select("#update-data")
 					height: function(d) { return height - margin.b - yScale(d); }
 				})
 				.style("fill", function(d) {
-					let colorRatio = 255 / maxValue;
 					return "rgb(0,0," + (d * colorRatio) +")";
 				});
 
@@ -131,27 +125,23 @@ d3.select("#enter-data")
 
 			bars.enter()
 						.append("rect")
-							.attr("x", width)
-							.attr("width", xScale.rangeBand())
 							.attr({
+								x: width,
+								width: xScale.rangeBand(),
 								y: function(d) { return yScale(d); },
 								height: function(d) { return height - margin.b - yScale(d); }
 							})
-							.style("fill", function(d) {
-								let colorRatio = 255 / maxValue;
-								return "rgb(0,0," + (d * colorRatio) +")";
-							});
+
 
 			bars.transition()
 					.duration(500)
 					.attr("x", function(d, i) {
 						return xScale(i);
 					})
-					.attr({
-						y: function(d) { return yScale(d); },
-						height: function(d) { return height - margin.b - yScale(d); }
-					})
 					.attr("width", xScale.rangeBand())
+					.style("fill", function(d) {
+						return "rgb(0,0," + (d * colorRatio) +")";
+					});
 
 
 			let labels = svg.selectAll(".bar-labels")
