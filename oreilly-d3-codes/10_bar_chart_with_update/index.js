@@ -42,7 +42,7 @@ svg.selectAll("rect")
 				return height - margin.b - yScale(d);
 			}
 		})
-		.style("fill", function(d) {
+		.attr("fill", function(d) {
 			return "rgb(0,0," + (d * 10) +")";
 		})
 
@@ -80,42 +80,104 @@ svg.selectAll("bar-label")
 			})
 	
 
-// Add event listener: When you click on h1, dataset changes.
-d3.select("input")
+// Add event listener: update, add and remove
+
+// Update data
+d3.select("#update-data")
 		.on("click", function() {
-			for(let i = 0; i < dataLength; i++) {
+			let bars = svg.selectAll("rect");
+			for(let i = 0; i < dataset.length; i++) {
 				dataset[i] = Math.floor(Math.random() * maxValue) + 1;
 			}
 
-			svg.selectAll("rect")
-					.data(dataset)
-					.transition()
-					.delay(function(d, i) {
-						return i / dataset.length * 1000;
-					})
+			bars.data(dataset)
+				.transition()
+				.delay(function(d, i) {
+					return i / dataset.length * 1000;
+				})
+				.duration(500)
+				.attr({
+					y: function(d) { return yScale(d); },
+					height: function(d) { return height - margin.b - yScale(d); }
+				})
+				.style("fill", function(d) {
+					let colorRatio = 255 / maxValue;
+					return "rgb(0,0," + (d * colorRatio) +")";
+				});
+
+		svg.selectAll(".bar-labels")
+				.data(dataset)
+				.transition()
+				.delay(function(d, i) {
+					return i / dataset.length * 1000;
+				})
+				.duration(500)
+				.attr("y", function(d) { return yScale(d) + (d > 2? 20: -10); })
+				.text(function(d) { return d; })
+				.style("fill", function(d) {
+					return d > 2? "white": "black";
+				})
+})
+
+// Add data
+d3.select("#enter-data")
+		.on("click", function() {
+
+			dataset.push(Math.floor(Math.random() * maxValue) + 1);
+			xScale.domain(d3.range(dataset.length))
+
+			let bars = svg.selectAll("rect")
+										.data(dataset);
+
+			bars.enter()
+						.append("rect")
+							.attr("x", width)
+							.attr("width", xScale.rangeBand())
+							.attr({
+								y: function(d) { return yScale(d); },
+								height: function(d) { return height - margin.b - yScale(d); }
+							})
+							.style("fill", function(d) {
+								let colorRatio = 255 / maxValue;
+								return "rgb(0,0," + (d * colorRatio) +")";
+							});
+
+			bars.transition()
 					.duration(500)
+					.attr("x", function(d, i) {
+						return xScale(i);
+					})
 					.attr({
 						y: function(d) { return yScale(d); },
 						height: function(d) { return height - margin.b - yScale(d); }
 					})
-					.style("fill", function(d) {
-						let colorRatio = 255 / maxValue;
-						return "rgb(0,0," + (d * colorRatio) +")";
-					});
+					.attr("width", xScale.rangeBand())
 
-			svg.selectAll(".bar-labels")
-					.data(dataset)
-					.transition()
-					.delay(function(d, i) {
-						return i / dataset.length * 1000;
-					})
+
+			let labels = svg.selectAll(".bar-labels")
+											.data(dataset);
+
+				labels.enter()
+							.append("text")
+								.attr("x", width)
+								.attr("class", "bar-labels")
+								.style("text-anchor", "middle")
+								.attr({
+									y: function(d) {
+										return yScale(d) + 20;
+									}
+								})
+								.text(function(d) { return d; })
+								.style("fill", function(d) {
+									return d != 1? "white": "black";
+								})
+
+
+				labels.transition()
 					.duration(500)
-					.attr("y", function(d) { return yScale(d) + (d != 1? 20: -10); })
-					.text(function(d) { return d; })
-					.style("fill", function(d) {
-						return d != 1? "white": "black";
-					})
-		})
-
-
-
+						.attr({
+							x: function(d, i) {
+								return xScale(i) + xScale.rangeBand() / 2;
+							},
+						})
+})
