@@ -1,0 +1,32 @@
+.container {
+	text-align: center;
+}
+
+button {
+	padding: 3px;
+	font-weight: 700;
+	font-family: sans-serif;
+}
+
+button:hover {
+	color: red;
+	background-color: yellow;
+}
+
+#my-graph {
+	display: block;
+	margin: 20px auto;
+	border: 1px solid black;
+}
+
+.axis text {
+	pointer-events: none;
+	font-family: monospace;
+	font-size: 10pt;
+}
+
+.axis path, .axis line {
+	fill: none;
+	stroke: black;
+}
+
