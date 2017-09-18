@@ -6,11 +6,15 @@ let key = function(d) {
 }
 
 let dataset = []
+var color, complementaryColor;
+
 let randomColor = function() {
-	r = Math.floor(Math.random() * 246) + 10;
-	g = Math.floor(Math.random() * 246) + 10;
-	b = Math.floor(Math.random() * 246) + 10;
-	return "rgb(" + r + ", " + g + ", " + b + ")";
+	let r = Math.floor(Math.random() * 246) + 10;
+	let g = Math.floor(Math.random() * 246) + 10;
+	let b = Math.floor(Math.random() * 246) + 10;
+
+	color = "rgb(" + r + ", " + g + ", " + b + ")";
+	complementaryColor = "rgb(" + (255 - r) + ", " + (255 - g) + ", " + (255 - b) + ")";
 }
 
 for(let i = 0; i < 20; i++) {
@@ -34,10 +38,9 @@ let svg = d3.select("#my-graph")
 						.attr("height", height + MARGIN.t + MARGIN.b)
 					  .append("g")
 						.attr("transform", "translate(" + MARGIN.l + ", " + MARGIN.t + ")");
-let colors = d3.scale.category20();
 
 // Initially enter bars
-color = randomColor();
+randomColor();
 svg.selectAll("rect")
 		.data(dataset, key)
 		.enter()
@@ -57,7 +60,19 @@ svg.selectAll("rect")
 				height: function(d) {
 					return height - yScale(d.value);
 				}
-			});
+			})
+			.on("mouseover", function() {
+					d3.select(this)
+						.transition()
+						.duration(100)
+						.style("fill", complementaryColor);
+			})
+			.on("mouseout", function() {
+					d3.select(this)
+						.transition()
+						.duration(100)
+						.style("fill", color);
+			})
 
 
 // Make x axis, y axis
@@ -82,3 +97,5 @@ svg.append("g")
 				})
 		)
 		
+
+// Refill number with new number
