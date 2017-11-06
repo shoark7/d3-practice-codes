@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>필터 기능 있는 선 그래프</title>
+	<link rel="stylesheet" href="index.css">
+	<script type="text/javascript" src="//d3js.org/d3.v4.min.js"></script>
+</head>
+
+<body>
+	<p>
+		<input id="from" type="number" placeholder="From">
+		<input id="to" type="number" placeholder="To">
+		<button id="go">Go</button>
+	</p>
+
+	<svg>
+		<g class="axis x-axis"></g>
+		<g class="axis y-axis"></g>
+		<g class="data">
+			<path></path>
+		</g>
+	</svg>
+
+	<script type="text/javascript" src="index.js"></script>
+</body>
+</html>
+
+
+
+
