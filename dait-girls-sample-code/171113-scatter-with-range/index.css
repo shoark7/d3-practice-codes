@@ -1,0 +1,8 @@
+.dots circle {
+	fill: rgba(0, 0, 0, 0.3);
+}
+
+svg {
+	margin-top: 1rem;
+	border: 1px solid black;
+}
